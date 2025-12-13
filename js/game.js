@@ -17,6 +17,7 @@ const sndGameOver = new Audio('../assets/sounds/GameOverSound.mp3');
 let running = true;
 let paused = false;
 let startTime = performance.now();
+let enemySpeedModifier = 1; // multiplicador de velocidade dos inimigos
 
 /* ================= PLAYER ================= */
 const player = {
@@ -25,8 +26,8 @@ const player = {
   size: 6,
   speed: 2,
   baseSpeed: 2,
-  doubleShot: false,
-  multiShot: false, // NOVO POWER-UP
+  doubleShotCount: 2, // quantidade de tiros inicial (shotgun)
+  multiShot: true,
   lastStep: 0
 };
 
@@ -132,26 +133,28 @@ function shoot() {
   sndShoot.play();
 
   if (player.multiShot) {
-    const bulletsCount = 20; // 20 tiros
-    const angleStep = (Math.PI * 2) / bulletsCount;
+    const bulletsCount = player.doubleShotCount;  // quantidade de tiros da shotgun
+    const spread = Math.PI / 4; // arco de 45°
+    const baseAngle = Math.atan2(mouseY - (player.y + player.size/2), mouseX - (player.x + player.size/2));
+
     for (let i = 0; i < bulletsCount; i++) {
-      fireBullet(i * angleStep);
+      const offset = spread * (i / (bulletsCount - 1) - 0.5);
+      fireBullet(baseAngle + offset);
     }
   } else {
-    fireBullet(0);
-    if (player.doubleShot) fireBullet(0.2);
+    fireBullet(Math.atan2(mouseY - (player.y + player.size/2), mouseX - (player.x + player.size/2)));
   }
 }
 
-function fireBullet(offset) {
+function fireBullet(angle) {
   const px = player.x + player.size / 2;
   const py = player.y + player.size / 2;
-  const ang = Math.atan2(mouseY - py, mouseX - px) + offset;
 
   bullets.push({
-    x: px, y: py,
-    dx: Math.cos(ang) * 4,
-    dy: Math.sin(ang) * 4
+    x: px,
+    y: py,
+    dx: Math.cos(angle) * 4,
+    dy: Math.sin(angle) * 4
   });
 }
 
@@ -180,8 +183,8 @@ function spawnEnemy() {
 function updateEnemies(diff) {
   ctx.fillStyle = '#e14a4a';
   enemies.forEach((e, ei) => {
-    e.x += Math.sign(player.x - e.x) * diff * 0.6;
-    e.y += Math.sign(player.y - e.y) * diff * 0.6;
+    e.x += Math.sign(player.x - e.x) * diff * 0.6 * enemySpeedModifier;
+    e.y += Math.sign(player.y - e.y) * diff * 0.6 * enemySpeedModifier;
     ctx.fillRect(e.x, e.y, e.size, e.size);
 
     if (Math.abs(player.x - e.x) < 6 && Math.abs(player.y - e.y) < 6) gameOver();
@@ -201,14 +204,14 @@ function spawnPowerup() {
   powerups.push({
     x: Math.random() * 300 + 10,
     y: Math.random() * 160 + 10,
-    type: Math.random() < 0.25 ? 'multi' : Math.random() < 0.5 ? 'speed' : 'double',
+    type: Math.random() < 0.25 ? 'multi' : Math.random() < 0.5 ? 'slow' : 'double',
     t: performance.now()
   });
 }
 
 function updatePowerups() {
   powerups.forEach((p, i) => {
-    ctx.fillStyle = p.type === 'speed' ? '#2ecc71' : p.type === 'double' ? '#9b59b6' : '#f39c12';
+    ctx.fillStyle = p.type === 'double' ? '#9b59b6' : p.type === 'slow' ? '#2ecc71' : '#f39c12';
     ctx.fillRect(p.x, p.y, 6, 6);
 
     if (Math.abs(player.x - p.x) < 6 && Math.abs(player.y - p.y) < 6) {
@@ -220,17 +223,19 @@ function updatePowerups() {
 
 function activatePower(type) {
   sndPower.play();
-  if (type === 'speed') {
-    player.speed = 4;
-    setTimeout(() => player.speed = player.baseSpeed, 5000);
-  }
   if (type === 'double') {
-    player.doubleShot = true;
-    setTimeout(() => player.doubleShot = false, 5000);
+    player.doubleShotCount += 2; // aumenta 2 tiros a cada power-up
+    setTimeout(() => {
+      player.doubleShotCount = Math.max(2, player.doubleShotCount - 2);
+    }, 5000);
   }
   if (type === 'multi') {
     player.multiShot = true;
     setTimeout(() => player.multiShot = false, 5000);
+  }
+  if (type === 'slow') {
+    enemySpeedModifier = 0.5; // reduz velocidade dos inimigos pela metade
+    setTimeout(() => enemySpeedModifier = 1, 5000);
   }
 }
 
