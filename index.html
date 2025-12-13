@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Last Seconds</title>
+<link rel="stylesheet" href="../css/menu.css">
+</head>
+<body>
+
+<audio id="bgMusic" src="./assets/sounds/LoopingMusic1.mp3" autoplay loop></audio>
+
+<div id="menu">
+  <div class="menu-box">
+    <h1>LAST SECONDS</h1>
+    <div class="input-box">
+      <input id="playerName" placeholder="Seu nome">
+    </div>
+    <button id="play">▶ Jogar</button>
+    <button onclick="location.href='../pages/ranking.html'">🏆 Ranking</button>
+    <button onclick="location.href='../pages/about.html'">ℹ Sobre</button>
+  </div>
+</div>
+
+<script src="../js/menu.js"></script>
+<script>
+  const music = document.getElementById('bgMusic');
+  music.volume = 0.2; // de 0.0 a 1.0
+</script>
+</body>
+</html>
