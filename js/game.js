@@ -26,7 +26,8 @@ const player = {
   speed: 2,
   baseSpeed: 2,
   doubleShot: false,
-  lastStep: 0 // Para controlar os passos
+  multiShot: false, // NOVO POWER-UP
+  lastStep: 0
 };
 
 /* ================= ENTIDADES ================= */
@@ -109,8 +110,7 @@ function movePlayer() {
   player.x = Math.max(0, Math.min(canvas.width - player.size, player.x));
   player.y = Math.max(0, Math.min(canvas.height - player.size, player.y));
 
-  // Som de passos
-  if (moved && performance.now() - player.lastStep > 300) { // Som a cada 300ms
+  if (moved && performance.now() - player.lastStep > 300) {
     sndStep.currentTime = 0;
     sndStep.play();
     player.lastStep = performance.now();
@@ -132,7 +132,7 @@ function shoot() {
   sndShoot.play();
 
   if (player.multiShot) {
-    const bulletsCount = 20;
+    const bulletsCount = 20; // 20 tiros
     const angleStep = (Math.PI * 2) / bulletsCount;
     for (let i = 0; i < bulletsCount; i++) {
       fireBullet(i * angleStep);
@@ -201,14 +201,14 @@ function spawnPowerup() {
   powerups.push({
     x: Math.random() * 300 + 10,
     y: Math.random() * 160 + 10,
-    type: Math.random() < 0.5 ? 'speed' : 'double',
+    type: Math.random() < 0.25 ? 'multi' : Math.random() < 0.5 ? 'speed' : 'double',
     t: performance.now()
   });
 }
 
 function updatePowerups() {
   powerups.forEach((p, i) => {
-    ctx.fillStyle = p.type === 'speed' ? '#2ecc71' : '#9b59b6';
+    ctx.fillStyle = p.type === 'speed' ? '#2ecc71' : p.type === 'double' ? '#9b59b6' : '#f39c12';
     ctx.fillRect(p.x, p.y, 6, 6);
 
     if (Math.abs(player.x - p.x) < 6 && Math.abs(player.y - p.y) < 6) {
@@ -227,6 +227,10 @@ function activatePower(type) {
   if (type === 'double') {
     player.doubleShot = true;
     setTimeout(() => player.doubleShot = false, 5000);
+  }
+  if (type === 'multi') {
+    player.multiShot = true;
+    setTimeout(() => player.multiShot = false, 5000);
   }
 }
 
@@ -262,6 +266,4 @@ function gameOver() {
   }
 }
 
-
 requestAnimationFrame(loop);
-
