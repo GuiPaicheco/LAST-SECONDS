@@ -26,7 +26,7 @@ const player = {
   size: 6,
   speed: 2,
   baseSpeed: 2,
-  doubleShotCount: 1,
+  doubleShotCount: 2,
   multiShot: true,
   lastStep: 0
 };
@@ -272,4 +272,5 @@ function gameOver() {
 }
 
 requestAnimationFrame(loop);
+
 
