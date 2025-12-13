@@ -131,8 +131,16 @@ function shoot() {
   sndShoot.currentTime = 0;
   sndShoot.play();
 
-  fireBullet(0);
-  if (player.doubleShot) fireBullet(0.2);
+  if (player.multiShot) {
+    const bulletsCount = 20;
+    const angleStep = (Math.PI * 2) / bulletsCount;
+    for (let i = 0; i < bulletsCount; i++) {
+      fireBullet(i * angleStep);
+    }
+  } else {
+    fireBullet(0);
+    if (player.doubleShot) fireBullet(0.2);
+  }
 }
 
 function fireBullet(offset) {
@@ -256,3 +264,4 @@ function gameOver() {
 
 
 requestAnimationFrame(loop);
+
