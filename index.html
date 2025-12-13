@@ -4,6 +4,128 @@
 <meta charset="UTF-8">
 <title>Last Seconds</title>
 <link rel="stylesheet" href="../css/menu.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0b0b14;
+  overflow: hidden;
+  color: #0ff;
+}
+
+/* Fundo com efeito retrô */
+body::before {
+  content: "";
+  position: absolute;
+  top:0; left:0; right:0; bottom:0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.02),
+    rgba(255,255,255,0.02) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+/* Telinha maior */
+.menu-box {
+  background: rgba(0,0,0,0.9);
+  padding: 60px 40px;
+  border: 6px solid #0ff;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 0 40px #0ff, 0 0 80px #0ff inset;
+  position: relative;
+  z-index: 1;
+}
+
+/* Título chamativo */
+.menu-box h1 {
+  font-size: 36px;
+  color: #ff0;
+  text-shadow: 0 0 8px #ff0, 0 0 16px #ff0, 0 0 24px #f0f;
+  margin-bottom: 30px;
+  animation: glow 1.5s infinite alternate;
+}
+
+/* Input de nome maior */
+.menu-box input {
+  width: 100%;
+  padding: 16px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  border: 2px solid #0ff;
+  background: #000;
+  color: rgba(255, 255, 255, 0.904);
+  text-align: center;
+  outline: none;
+}
+
+/* Botões com efeito pulsante */
+.menu-box button {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  margin: 10px 0;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  background: none;
+  color: #0ff;
+  font-size: 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: 0.2s;
+}
+
+.menu-box button:hover {
+  background: #0ff;
+  color: #000;
+  box-shadow: 0 0 12px #0ff, 0 0 24px #0ff inset;
+  animation: pulse 1s infinite alternate;
+}
+
+/* Insert Coin */
+.insert-coin {
+  font-size: 12px;
+  color: #f00;
+  margin-top: 20px;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 8px #ff0, 0 0 16px #ff0, 0 0 24px #f0f; }
+  50% { text-shadow: 0 0 16px #ff0, 0 0 32px #ff0, 0 0 48px #f0f; }
+  100% { text-shadow: 0 0 8px #ff0, 0 0 16px #ff0, 0 0 24px #f0f; }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 6px #0ff, 0 0 12px #0ff inset; }
+  50% { box-shadow: 0 0 10px #0ff, 0 0 20px #0ff inset; }
+  100% { box-shadow: 0 0 6px #0ff, 0 0 12px #0ff inset; }
+}
+
+*{
+  cursor: crosshair;
+}
+  </style>
 </head>
 <body>
 
@@ -25,6 +147,14 @@
 <script>
   const music = document.getElementById('bgMusic');
   music.volume = 0.2; // de 0.0 a 1.0
+
+  document.getElementById('play').onclick=()=>{
+  const name=document.getElementById('playerName').value.trim();
+  if(!name) return alert('Digite seu nome');
+  localStorage.setItem('playerName',name);
+  location.href='pages/game.html';
+};
 </script>
 </body>
 </html>
+
