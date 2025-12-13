@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0b14;
+  color: #eaeaea;
+}
+
+/* CANVAS */
+canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+/* HUD */
+#hud {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  z-index: 10;
+}
+
+/* PAUSE */
+#pause {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  color: #f2d94c;
+  font-size: 14px;
+  z-index: 20;
+}
+
+#pause span {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+#game {
+  cursor: none;
+}
+
+/* GAME OVER */
+#gameover {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  z-index: 30;
+}
+
+#gameover h1 {
+  color: #e14a4a;
+  font-size: 32px;
+}
+
+#gameover button {
+  padding: 10px;
+  background: #eff24ce8;
+  border: none;
+  font-size: 10px;
+  cursor: crosshair;
+}
+
+*{
+  cursor: crosshair;
+}

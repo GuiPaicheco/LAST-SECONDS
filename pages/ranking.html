@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Last Seconds — Ranking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="../css/ranking.css">
+</head>
+<body>
+
+<div class="arcade-screen">
+  <div class="arcade-frame">
+
+    <h1 class="title">TOP 10</h1>
+    <h2 class="subtitle">LAST SECONDS</h2>
+
+    <ol id="rankingList" class="ranking">
+      <!-- preenchido via JS -->
+    </ol>
+
+    <p class="insert">INSERT COIN</p>
+
+    <button class="back" onclick="location.href='../index.html'">
+      ⬅ RETURN
+    </button>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="../js/ranking.js"></script>
+
+</body>
+</html>
