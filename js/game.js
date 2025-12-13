@@ -17,7 +17,7 @@ const sndGameOver = new Audio('../assets/sounds/GameOverSound.mp3');
 let running = true;
 let paused = false;
 let startTime = performance.now();
-let enemySpeedModifier = 1; // multiplicador de velocidade dos inimigos
+let enemySpeedModifier = 1;
 
 /* ================= PLAYER ================= */
 const player = {
@@ -25,9 +25,6 @@ const player = {
   y: 90,
   size: 6,
   speed: 2,
-  baseSpeed: 2,
-  doubleShotCount: 2,
-  multiShot: true,
   lastStep: 0
 };
 
@@ -91,22 +88,10 @@ function loop(t) {
 function movePlayer() {
   let moved = false;
 
-  if (keys['w'] || keys['arrowup']) {
-    player.y -= player.speed;
-    moved = true;
-  }
-  if (keys['s'] || keys['arrowdown']) {
-    player.y += player.speed;
-    moved = true;
-  }
-  if (keys['a'] || keys['arrowleft']) {
-    player.x -= player.speed;
-    moved = true;
-  }
-  if (keys['d'] || keys['arrowright']) {
-    player.x += player.speed;
-    moved = true;
-  }
+  if (keys['w'] || keys['arrowup']) { player.y -= player.speed; moved = true; }
+  if (keys['s'] || keys['arrowdown']) { player.y += player.speed; moved = true; }
+  if (keys['a'] || keys['arrowleft']) { player.x -= player.speed; moved = true; }
+  if (keys['d'] || keys['arrowright']) { player.x += player.speed; moved = true; }
 
   player.x = Math.max(0, Math.min(canvas.width - player.size, player.x));
   player.y = Math.max(0, Math.min(canvas.height - player.size, player.y));
@@ -132,18 +117,8 @@ function shoot() {
   sndShoot.currentTime = 0;
   sndShoot.play();
 
-  if (player.multiShot) {
-    const bulletsCount = player.doubleShotCount;  // quantidade de tiros da shotgun
-    const spread = Math.PI / 4; // arco de 45°
-    const baseAngle = Math.atan2(mouseY - (player.y + player.size/2), mouseX - (player.x + player.size/2));
-
-    for (let i = 0; i < bulletsCount; i++) {
-      const offset = spread * (i / (bulletsCount - 1) - 0.5);
-      fireBullet(baseAngle + offset);
-    }
-  } else {
-    fireBullet(Math.atan2(mouseY - (player.y + player.size/2), mouseX - (player.x + player.size/2)));
-  }
+  const angle = Math.atan2(mouseY - (player.y + player.size/2), mouseX - (player.x + player.size/2));
+  fireBullet(angle);
 }
 
 function fireBullet(angle) {
@@ -171,26 +146,43 @@ function updateBullets() {
 
 /* ================= INIMIGOS ================= */
 function spawnEnemy() {
-  const s = Math.floor(Math.random() * 4);
+  let type;
+  const r = Math.random();
+  if (r < 0.6) type = 0;     // 60% normal
+  else if (r < 0.85) type = 1; // 25% rápido
+  else type = 2;             // 15% pequeno
+
   let x, y;
-  if (s === 0) { x = Math.random() * canvas.width; y = -8; }
-  if (s === 1) { x = Math.random() * canvas.width; y = canvas.height + 8; }
-  if (s === 2) { x = -8; y = Math.random() * canvas.height; }
-  if (s === 3) { x = canvas.width + 8; y = Math.random() * canvas.height; }
-  enemies.push({ x, y, size: 6 });
+  const side = Math.floor(Math.random() * 4);
+  if (side === 0) { x = Math.random() * canvas.width; y = -8; }
+  if (side === 1) { x = Math.random() * canvas.width; y = canvas.height + 8; }
+  if (side === 2) { x = -8; y = Math.random() * canvas.height; }
+  if (side === 3) { x = canvas.width + 8; y = Math.random() * canvas.height; }
+
+  let enemy = { x, y, type, size: 6, speedModifier: 1 };
+
+  if (type === 1) enemy.speedModifier = 1.5;
+  if (type === 2) { enemy.size = 4; enemy.speedModifier = 0.8; }
+
+  enemies.push(enemy);
 }
 
 function updateEnemies(diff) {
-  ctx.fillStyle = '#e14a4a';
   enemies.forEach((e, ei) => {
-    e.x += Math.sign(player.x - e.x) * diff * 0.6 * enemySpeedModifier;
-    e.y += Math.sign(player.y - e.y) * diff * 0.6 * enemySpeedModifier;
+    const speed = diff * 0.6 * enemySpeedModifier * e.speedModifier;
+    e.x += Math.sign(player.x - e.x) * speed;
+    e.y += Math.sign(player.y - e.y) * speed;
+
+    if (e.type === 0) ctx.fillStyle = '#e14a4a';
+    else if (e.type === 1) ctx.fillStyle = '#2ecc71';
+    else ctx.fillStyle = '#3498db';
+
     ctx.fillRect(e.x, e.y, e.size, e.size);
 
-    if (Math.abs(player.x - e.x) < 6 && Math.abs(player.y - e.y) < 6) gameOver();
+    if (Math.abs(player.x - e.x) < e.size && Math.abs(player.y - e.y) < e.size) gameOver();
 
     bullets.forEach((b, bi) => {
-      if (b.x > e.x && b.x < e.x + 6 && b.y > e.y && b.y < e.y + 6) {
+      if (b.x > e.x && b.x < e.x + e.size && b.y > e.y && b.y < e.y + e.size) {
         sndExplode.play();
         enemies.splice(ei, 1);
         bullets.splice(bi, 1);
@@ -224,17 +216,13 @@ function updatePowerups() {
 function activatePower(type) {
   sndPower.play();
   if (type === 'double') {
-    player.doubleShotCount += 2; // aumenta 2 tiros a cada power-up
-    setTimeout(() => {
-      player.doubleShotCount = Math.max(2, player.doubleShotCount - 2);
-    }, 5000);
+    // não muda mais o tiro porque tiramos multiShot
   }
   if (type === 'multi') {
-    player.multiShot = true;
-    setTimeout(() => player.multiShot = false, 5000);
+    // agora inútil, mas pode adicionar algum outro efeito
   }
   if (type === 'slow') {
-    enemySpeedModifier = 0.5; // reduz velocidade dos inimigos pela metade
+    enemySpeedModifier = 0.5;
     setTimeout(() => enemySpeedModifier = 1, 5000);
   }
 }
@@ -272,5 +260,3 @@ function gameOver() {
 }
 
 requestAnimationFrame(loop);
-
-
