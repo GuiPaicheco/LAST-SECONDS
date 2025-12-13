@@ -26,7 +26,7 @@ const player = {
   size: 6,
   speed: 2,
   baseSpeed: 2,
-  doubleShotCount: 2, // quantidade de tiros inicial (shotgun)
+  doubleShotCount: 1,
   multiShot: true,
   lastStep: 0
 };
@@ -272,3 +272,4 @@ function gameOver() {
 }
 
 requestAnimationFrame(loop);
+
