@@ -26,7 +26,7 @@ const player = {
   speed: 2,
   baseSpeed: 2,
   doubleShot: false,
-  multiShot: true,
+  multiShot: false, // NOVO POWER-UP
   lastStep: 0
 };
 
@@ -267,4 +267,3 @@ function gameOver() {
 }
 
 requestAnimationFrame(loop);
-
