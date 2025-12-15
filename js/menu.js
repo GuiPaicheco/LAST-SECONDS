@@ -1,6 +1,24 @@
-document.getElementById('play').onclick=()=>{
-  const name=document.getElementById('playerName').value.trim();
-  if(!name) return alert('Digite seu nome');
-  localStorage.setItem('playerName',name);
-  location.href='pages/game.html';
-};
+const playBtn = document.getElementById('play');
+const rankingBtn = document.getElementById('ranking');
+const aboutBtn = document.getElementById('about');
+const input = document.getElementById('playerName');
+
+playBtn.addEventListener('click', () => {
+  const name = input.value.trim();
+
+  if (!name) {
+    alert('Digite seu nome');
+    return;
+  }
+
+  localStorage.setItem('playerName', name);
+  location.href = 'pages/game.html';
+});
+
+rankingBtn.addEventListener('click', () => {
+  location.href = 'pages/ranking.html';
+});
+
+aboutBtn.addEventListener('click', () => {
+  location.href = 'pages/about.html';
+});
