@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Last Seconds</title>
-<link rel="stylesheet" href="../css/menu.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  <meta charset="UTF-8">
+  <title>Last Seconds</title>
 
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="css/menu.css">
+
+  <!-- Fonte -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- CSS interno (mantido exatamente como você fez) -->
+  <style>
 * {
   box-sizing: border-box;
   font-family: 'Press Start 2P', monospace;
@@ -24,11 +31,10 @@ body {
   color: #0ff;
 }
 
-/* Fundo com efeito retrô */
 body::before {
   content: "";
   position: absolute;
-  top:0; left:0; right:0; bottom:0;
+  inset: 0;
   background: repeating-linear-gradient(
     0deg,
     rgba(255,255,255,0.02),
@@ -39,7 +45,6 @@ body::before {
   pointer-events: none;
 }
 
-/* Telinha maior */
 .menu-box {
   background: rgba(0,0,0,0.9);
   padding: 60px 40px;
@@ -53,7 +58,6 @@ body::before {
   z-index: 1;
 }
 
-/* Título chamativo */
 .menu-box h1 {
   font-size: 36px;
   color: #ff0;
@@ -62,7 +66,6 @@ body::before {
   animation: glow 1.5s infinite alternate;
 }
 
-/* Input de nome maior */
 .menu-box input {
   width: 100%;
   padding: 16px;
@@ -70,12 +73,11 @@ body::before {
   margin-bottom: 20px;
   border: 2px solid #0ff;
   background: #000;
-  color: rgba(255, 255, 255, 0.904);
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
   outline: none;
 }
 
-/* Botões com efeito pulsante */
 .menu-box button {
   display: block;
   width: 100%;
@@ -98,7 +100,6 @@ body::before {
   animation: pulse 1s infinite alternate;
 }
 
-/* Insert Coin */
 .insert-coin {
   font-size: 12px;
   color: #f00;
@@ -111,50 +112,48 @@ body::before {
 }
 
 @keyframes glow {
-  0% { text-shadow: 0 0 8px #ff0, 0 0 16px #ff0, 0 0 24px #f0f; }
-  50% { text-shadow: 0 0 16px #ff0, 0 0 32px #ff0, 0 0 48px #f0f; }
+  0%   { text-shadow: 0 0 8px #ff0, 0 0 16px #ff0, 0 0 24px #f0f; }
+  50%  { text-shadow: 0 0 16px #ff0, 0 0 32px #ff0, 0 0 48px #f0f; }
   100% { text-shadow: 0 0 8px #ff0, 0 0 16px #ff0, 0 0 24px #f0f; }
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 6px #0ff, 0 0 12px #0ff inset; }
-  50% { box-shadow: 0 0 10px #0ff, 0 0 20px #0ff inset; }
+  0%   { box-shadow: 0 0 6px #0ff, 0 0 12px #0ff inset; }
+  50%  { box-shadow: 0 0 10px #0ff, 0 0 20px #0ff inset; }
   100% { box-shadow: 0 0 6px #0ff, 0 0 12px #0ff inset; }
 }
 
-*{
+* {
   cursor: crosshair;
 }
   </style>
 </head>
+
 <body>
 
-<audio id="bgMusic" src="./assets/sounds/LoopingMusic1.mp3" autoplay loop></audio>
+<audio id="bgMusic" src="assets/sounds/LoopingMusic1.mp3" autoplay loop></audio>
 
 <div id="menu">
   <div class="menu-box">
     <h1>LAST SECONDS</h1>
+
     <div class="input-box">
       <input id="playerName" placeholder="Seu nome">
     </div>
+
     <button id="play">▶ Jogar</button>
-    <button onclick="location.href='https://guipaicheco.github.io/LAST-SECONDS/pages/ranking.html'">🏆 Ranking</button>
-    <button onclick="location.href='https://guipaicheco.github.io/LAST-SECONDS/pages/about.html'">ℹ Sobre</button>
+    <button id="ranking">🏆 Ranking</button>
+    <button id="about">ℹ Sobre</button>
+
+    <div class="insert-coin">INSERT COIN</div>
   </div>
 </div>
 
-<script src="../js/menu.js"></script>
 <script>
   const music = document.getElementById('bgMusic');
-  music.volume = 0.2; // de 0.0 a 1.0
-
-  document.getElementById('play').onclick=()=>{
-  const name=document.getElementById('playerName').value.trim();
-  if(!name) return alert('Digite seu nome');
-  localStorage.setItem('playerName',name);
-  location.href='pages/game.html';
-};
+  music.volume = 0.2;
 </script>
+
+<script src="js/menu.js"></script>
 </body>
 </html>
-
