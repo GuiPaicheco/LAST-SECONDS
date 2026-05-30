@@ -7,23 +7,34 @@ firebase.initializeApp({
 const db = firebase.firestore();
 const list = document.getElementById('rankingList');
 
-db.collection('ranking')
-  .orderBy('tempo', 'desc')
-  .limit(10)
-  .get()
-  .then(snapshot => {
-    let pos = 1;
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      const li = document.createElement('li');
+function carregarRanking() {
+  list.innerHTML = '';
 
-      li.innerHTML = `
-        <span>${String(pos).padStart(2,'0')}</span>
-        <span>${d.nome.toUpperCase()}</span>
-        <span>${d.tempo.toFixed(2)}s</span>
-      `;
+  db.collection('ranking')
+    .orderBy('tempo', 'desc')
+    .limit(10)
+    .get()
+    .then(snapshot => {
+      let pos = 1;
 
-      list.appendChild(li);
-      pos++;
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        const li = document.createElement('li');
+
+        li.innerHTML = `
+          <span>${String(pos).padStart(2, '0')}</span>
+          <span>${(d.nome || 'SEM NOME').toUpperCase()}</span>
+          <span>${Number(d.tempo || 0).toFixed(2)}s</span>
+        `;
+
+        list.appendChild(li);
+        pos++;
+      });
+    })
+    .catch(error => {
+      console.error('Erro ao carregar ranking:', error);
     });
-  });
+}
+
+carregarRanking();
+setInterval(carregarRanking, 10000);
